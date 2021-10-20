@@ -1,0 +1,143 @@
+config
+
+package com.JPA.Demobook.Config;
+
+import com.JPA.Demobook.Service.MyServices;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class config {
+
+    @Bean
+    public MyServices myservices(){
+        return new MyServices();
+    }
+}
+
+my controller
+package com.JPA.Demobook.Controller;
+
+import com.JPA.Demobook.Car;
+import com.JPA.Demobook.Service.MyServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class MyController {
+
+    @Autowired
+    MyServices myServices;
+
+    @GetMapping("/cars")
+    public List<Car> cars(){
+        return myServices.getCars();
+    }
+    @PostMapping("/addcar")
+    public Car addcar(@RequestBody Car car){
+        return myServices.addCar(car);
+    }
+    @GetMapping("/carbyid")
+    public Car carByid(@RequestParam("id")int id){
+        return myServices.getById(id);
+    }
+}
+
+myservices
+
+package com.JPA.Demobook.Service;
+
+import com.JPA.Demobook.Car;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MyServices implements MyServicesInterface{
+
+    List<Car> list=new ArrayList<Car>();
+
+
+    public MyServices(){
+        list.add(new Car(1,"Lamborghini","this is Lamborghini Car"));
+        list.add(new Car(2,"Tesla","This is Tesla"));
+    }
+
+    @Override
+    public List<Car> getCars() {  //get all books from the library
+        return list;
+    }
+
+    @Override
+    public Car addCar(Car cars) {
+        this.list.add(cars);
+        return cars;
+    }
+
+    @Override
+    public Car getById(int id) {
+
+        for(Car cars:this.list){
+            if(cars.getId()==id){
+                return cars;
+            }
+        }
+        return null;
+
+    }
+}
+
+interface
+package com.JPA.Demobook.Service;
+
+import com.JPA.Demobook.Car;
+
+import java.util.List;
+
+public interface MyServicesInterface {
+    public List<Car> getCars();
+    public Car addCar(Car books);
+    public Car getById(int id);
+}
+
+car
+package com.JPA.Demobook;
+
+public class Car {
+    int id;
+    String name;
+    String dis;
+    public int getId() {
+        return id;
+    }
+
+    public Car(int id, String name, String dis) {
+        this.id = id;
+        this.name = name;
+        this.dis = dis;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDis() {
+        return dis;
+    }
+
+    public void setDis(String dis) {
+        this.dis = dis;
+    }
+
+
+
+}
